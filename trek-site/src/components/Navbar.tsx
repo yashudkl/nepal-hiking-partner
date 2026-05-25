@@ -1,18 +1,19 @@
+'use client'
+
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const links = [
   { name: 'Home', path: '/' },
   { name: 'Treks', path: '/trek' },
-  { name: 'Tours', path: '#' },
-  { name: 'Retreats', path: '#' },
-  { name: 'Biking', path: '#' },
-  { name: 'About', path: '#' },
+  { name: 'Farm Stay Retreat', path: '#' },
+  { name: 'About', path: '/about' },
 ]
 
 function MountainLogo() {
   return (
-    <svg width="38" height="38" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="50" height="50" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
       <polygon points="12,62 32,28 40,44 52,22 68,62" fill="#0d3a5c" />
       <polygon points="12,62 32,28 40,44 52,22 68,62" fill="url(#mtnGrad)" opacity="0.95" />
       <polygon points="12,62 36,36 40,44 44,36 68,62" fill="rgba(255,255,255,0.92)" />
@@ -30,7 +31,7 @@ function MountainLogo() {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const location = useLocation()
+  const pathname = usePathname()
   const [activeLink, setActiveLink] = useState('Home')
 
   useEffect(() => {
@@ -53,33 +54,39 @@ export default function Navbar() {
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap');
 
         .nhp-nav {
-          position: fixed;
-          top: 0; left: 0; right: 0;
-          z-index: 100;
+          position: fixed !important;
+          top: 0 !important; left: 0 !important; right: 0 !important;
+          z-index: 100 !important;
           font-family: 'DM Sans', sans-serif;
           transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+          background: none !important;
+          backdrop-filter: blur(8px) !important;
+          -webkit-backdrop-filter: blur(8px) !important;
+          border: none !important;
+          box-shadow: none !important;
         }
 
         .nhp-nav.scrolled {
-          background: rgba(8, 20, 36, 0.92);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          border-bottom: 0.5px solid rgba(0, 200, 224, 0.2);
-          box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+          background: rgba(8, 20, 36, 0.92) !important;
+          backdrop-filter: blur(18px) !important;
+          -webkit-backdrop-filter: blur(18px) !important;
+          border-bottom: 0.5px solid rgba(0, 200, 224, 0.2) !important;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.3) !important;
         }
 
         .nhp-nav.top {
-          background: rgba(8, 20, 36, 0.35);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border-bottom: 0.5px solid rgba(255,255,255,0.08);
+          background: none !important;
+          backdrop-filter: blur(8px) !important;
+          -webkit-backdrop-filter: blur(8px) !important;
+          border: none !important;
+          box-shadow: none !important;
         }
 
         .nhp-inner {
           max-width: 1200px;
           margin: 0 auto;
           padding: 0 28px;
-          height: 66px;
+          height: 80px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -96,7 +103,7 @@ export default function Navbar() {
 
         .nhp-logo-text {
           font-family: 'Bebas Neue', sans-serif;
-          font-size: 20px;
+          font-size: 22px;
           letter-spacing: 3px;
           color: #fff;
           line-height: 1;
@@ -211,6 +218,11 @@ export default function Navbar() {
 
         /* Mobile menu */
         .nhp-mobile-menu {
+          position: fixed;
+          top: 80px;
+          left: 0;
+          right: 0;
+          z-index: 99;
           overflow: hidden;
           max-height: 0;
           transition: max-height 0.35s ease;
@@ -221,7 +233,7 @@ export default function Navbar() {
         }
 
         .nhp-mobile-menu.open {
-          max-height: 400px;
+          max-height: 500px;
         }
 
         .nhp-mobile-inner {
@@ -264,7 +276,7 @@ export default function Navbar() {
           <div className="nhp-inner">
 
             {/* Logo */}
-            <Link className="nhp-logo" to="/" aria-label="Nepal Hiking Partner – Home">
+            <Link className="nhp-logo" href="/" aria-label="Nepal Hiking Partner – Home">
               <MountainLogo />
               <div>
                 <span className="nhp-logo-text">
@@ -280,8 +292,8 @@ export default function Navbar() {
                 <li key={l.name}>
                   {l.path.startsWith('/') ? (
                     <Link
-                      to={l.path}
-                      className={location.pathname === l.path ? 'active' : ''}
+                      href={l.path}
+                      className={pathname === l.path ? 'active' : ''}
                       onClick={() => setActiveLink(l.name)}
                     >
                       {l.name}
@@ -325,8 +337,8 @@ export default function Navbar() {
               l.path.startsWith('/') ? (
                 <Link
                   key={l.name}
-                  to={l.path}
-                  className={location.pathname === l.path ? 'active' : ''}
+                  href={l.path}
+                  className={pathname === l.path ? 'active' : ''}
                   onClick={() => { setActiveLink(l.name); setMenuOpen(false) }}
                 >
                   {l.name}

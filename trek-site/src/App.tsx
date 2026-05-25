@@ -2,9 +2,9 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import Home from './pages/Home'
-import TrekList from './pages/TrekList'
-import Trek from './pages/Trek'
+import Home from '../pages/Home'
+import TrekList from '../pages/TrekList'
+import Trek from '../pages/Trek'
 
 export default function App() {
   return (
