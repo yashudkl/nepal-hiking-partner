@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 const links = [
   { name: 'Home', path: '/' },
   { name: 'Treks', path: '/trek' },
-  { name: 'Farm Stay Retreat', path: '#' },
+  { name: 'Farm Stay Retreat', path: '/farm-stay' },
   { name: 'About', path: '/about' },
 ]
 
@@ -32,6 +32,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
   const [activeLink, setActiveLink] = useState('Home')
 
   useEffect(() => {
@@ -312,7 +313,11 @@ export default function Navbar() {
             </ul>
 
             {/* Desktop CTA */}
-            <button className="nhp-cta nhp-cta-desktop" aria-label="Book a trek">
+            <button 
+              className="nhp-cta nhp-cta-desktop" 
+              onClick={() => router.push('/book-trek')}
+              aria-label="Book a trek"
+            >
               Book a Trek
             </button>
 
@@ -354,7 +359,12 @@ export default function Navbar() {
                 </a>
               )
             ))}
-            <button className="nhp-cta nhp-mobile-cta">Book a Trek</button>
+            <button 
+              className="nhp-cta nhp-mobile-cta"
+              onClick={() => { router.push('/book-trek'); setMenuOpen(false) }}
+            >
+              Book a Trek
+            </button>
           </div>
         </div>
       </header>
