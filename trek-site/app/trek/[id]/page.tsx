@@ -1,16 +1,16 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { use, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '../../../src/data/treks'
 
 interface TrekProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export default function Trek({ params }: TrekProps) {
   const router = useRouter()
-  const { id } = params
+  const { id } = use(params)
   const trek = treks.find(t => t.id === id)
   const heroRef = useRef<HTMLDivElement>(null)
   const [expandedDay, setExpandedDay] = useState<number | null>(0)
