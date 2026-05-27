@@ -552,7 +552,8 @@ export default function BookATrek() {
                         className="select-trek-btn"
                         onClick={() => {
                           setFormData((prev) => ({ ...prev, trekId: trek.id }))
-                          document.querySelector('[name="trekId"]')?.focus()
+                          const element = document.querySelector('[name="trekId"]') as HTMLElement
+                          element?.focus()
                         }}
                       >
                         Select Trek

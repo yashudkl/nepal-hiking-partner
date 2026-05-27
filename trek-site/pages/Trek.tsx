@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import  {  useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '../src/data/treks'
 

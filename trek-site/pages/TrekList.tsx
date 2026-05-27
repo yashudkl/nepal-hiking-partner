@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+
 import { useRouter } from 'next/navigation'
 import { treks } from '../src/data/treks'
 export default function TrekList() {

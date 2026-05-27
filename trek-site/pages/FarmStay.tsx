@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const amenities = [
   { icon: '🏠', title: 'Spacious Rooms', desc: 'Comfortable accommodation with mountain views' },
