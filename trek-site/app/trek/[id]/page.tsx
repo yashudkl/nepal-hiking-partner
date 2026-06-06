@@ -16,14 +16,55 @@ export default function Trek({ params }: TrekProps) {
   const [expandedDay, setExpandedDay] = useState<number | null>(0)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  // Gallery images - using placeholder service
-  const galleryImages = [
-    `https://picsum.photos/1200/600?random=${id}1`,
-    `https://picsum.photos/1200/600?random=${id}2`,
-    `https://picsum.photos/1200/600?random=${id}3`,
-    `https://picsum.photos/1200/600?random=${id}4`,
-    `https://picsum.photos/1200/600?random=${id}5`,
-  ]
+  // Gallery images from trek-specific folders
+  const getGalleryImages = () => {
+    // Map of trek IDs to their image file names in their respective folders
+    // Add all images for each trek - they will all display in the gallery
+    const trekImageMap: { [key: string]: string[] } = {
+      'everest-three-pass': [
+        'everest_threepass.png',
+        // Add more images here as you add them to the folder
+      ],
+      'everest-base-camp': [
+        'everestbasecamp.png',
+        // Add more images here as you add them to the folder
+      ],
+      'langtang-trek': [
+        'langtang.png',
+        // Add more images here as you add them to the folder
+      ],
+      'narphu-valley': [
+        'narphu_valley.png',
+        // Add more images here as you add them to the folder
+      ],
+      'mardi-himal': [
+        'mardi.png',
+        // Add more images here as you add them to the folder
+      ],
+      'annapurna-base-camp': [
+        'annapurna_base_camp.png',
+        // Add more images here as you add them to the folder
+      ],
+      'gosaikunda': [
+        'gosaikunda.jpg',
+        // Add more images here as you add them to the folder
+      ],
+      'annapurna-circuit': [
+        'annapurna_circuit.png',
+        // Add more images here as you add them to the folder
+      ],
+      'manaslu-circuit': [
+        'manaslu.png',
+        'manaslu.JPG',
+        // Add more images here as you add them to the folder
+      ],
+    }
+
+    const imageNames = trekImageMap[id] || []
+    return imageNames.map(name => `/assets/${id}/${name}`)
+  }
+
+  const galleryImages = getGalleryImages()
 
   if (!trek) {
     return (

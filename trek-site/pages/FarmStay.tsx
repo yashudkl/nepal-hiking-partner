@@ -459,11 +459,11 @@ export default function FarmStay() {
       <div className="farmstay-container">
         {/* Header */}
         <div className="farmstay-header">
-          <h1>Resunga Farm Stay Resort</h1>
-          <p className="subtitle">📍 Tanahu District, Gandaki Province · Your Gateway to Rural Nepal</p>
+          <h1>Resunga Farm Stay & Retreat</h1>
+          <p className="subtitle">Experience the essence of rural life, where crisp fresh air meets the warmth of authentic local flavors</p>
           <div className="rating">
             <span>★★★★★</span>
-            <span>4.9 (128 reviews)</span>
+            <span>Authentic Nepal Experience</span>
           </div>
         </div>
 
@@ -493,62 +493,50 @@ export default function FarmStay() {
         {/* Main Content */}
         <div className="details-container">
           <div className="details-content">
-            <h2>Experience Authentic Mountain Living</h2>
+            <h2>Discover Resunga</h2>
             <p>
-              Welcome to Resunga Farm Stay Resort, a serene escape nestled in the heart of Tanahu District. This
-              unique retreat combines authentic farm life with modern comfort, offering guests a genuine window
-              into rural Nepali culture and sustainability.
+              At Resunga Farm Stay & Retreat, we invite you to immerse yourself in the tranquil beauty of Nepal's countryside. Nestled in a pristine rural setting, our family-owned sanctuary offers a genuine Nepali experience, seamlessly blending modern comforts with the timeless charm of country living.
+            </p>
+            <p>
+              Whether you are exploring our sustainable organic farm, savoring locally sourced farm-to-table cuisine, or embarking on immersive cultural adventures, our mission is to provide you with an unforgettable, meaningful stay. Come join us and experience a getaway that truly celebrates Nepal's rich heritage, natural wonders, and heartfelt hospitality.
             </p>
 
-            <h2 style={{ marginTop: '32px' }}>About the Property</h2>
+            <h2 style={{ marginTop: '32px' }}>Local Ingredients, Authentic Flavors</h2>
             <p>
-              Resunga Farm Stay Resort spans across lush agricultural lands with panoramic views of the Himalayas.
-              Our property features traditional architecture blended with contemporary amenities, creating a warm
-              and welcoming atmosphere. Each room is thoughtfully designed to provide comfort while maintaining the
-              authentic charm of a traditional Nepali homestay.
+              At Resunga Farm Stay, we take immense pride in serving traditional Nepali cuisine crafted entirely from locally sourced, organic ingredients. Every meal is a vibrant celebration of the region's finest seasonal produce—ensuring a wholesome, delightful culinary experience that perfectly complements your stay in our serene countryside.
             </p>
 
             <div className="highlight-box">
-              ✓ Traditional farm activities · Fresh organic meals · Authentic hospitality · Mountain views ·
-              Sustainable tourism practices
+              ✓ Organic Farm · Farm-to-Table Cuisine · Cultural Immersion · Sustainable Practices · Family-Owned
             </div>
 
-            <h2 style={{ marginTop: '32px' }}>Why Choose Resunga?</h2>
+            <h2 style={{ marginTop: '32px' }}>Our Services</h2>
             <p>
-              We believe in creating meaningful connections between guests and the local community. Unlike
-              conventional resorts, every aspect of your stay supports local farmers and sustainable practices.
-              You'll interact with family members, learn traditional cooking, participate in farm work, and
-              understand the rhythms of rural life in Nepal.
+              Our offerings encompass charming and comfortable accommodations, nourishing farm-to-table dining, and a variety of engaging outdoor and cultural activities. Whether you are seeking quiet relaxation, countryside exploration, or deep cultural immersion, our personalized services are tailored to ensure your stay is both enriching and memorable.
             </p>
           </div>
 
           <div className="info-card">
-            <h3>Property Details</h3>
-            <div className="info-item">
-              <span className="info-label">Rooms</span>
-              <span className="info-value">12 Rooms</span>
+            <h3>Booking & Inquiry</h3>
+            <div className="info-item" style={{flexDirection: 'column', alignItems: 'flex-start', gap: '8px'}}>
+              <span className="info-label">Location</span>
+              <span className="info-value" style={{fontSize: '12px', color: '#d1d5db'}}>Gulmi, Nepal<br/>(10 hrs jeep ride from Kathmandu)</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Guests</span>
-              <span className="info-value">2-4 per room</span>
+              <span className="info-label">Phone</span>
+              <span className="info-value" style={{ fontSize: '12px' }}>+977-9843756464</span>
             </div>
-            <div className="info-item">
-              <span className="info-label">Elevation</span>
-              <span className="info-value">1,200m</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Facilities</span>
-              <span className="info-value">8 Amenities</span>
+            <div className="info-item" style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+              <span className="info-label">Email</span>
+              <span className="info-value" style={{ fontSize: '12px', color: 'var(--cyan)' }}>dhurbapanthi@gmail.com</span>
             </div>
             <div className="info-item">
               <span className="info-label">Best Season</span>
               <span className="info-value">Oct - May</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Contact</span>
-              <span className="info-value" style={{ cursor: 'pointer' }}>
-                Email · Call
-              </span>
+              <span className="info-label">Type</span>
+              <span className="info-value">Farm Stay</span>
             </div>
           </div>
         </div>

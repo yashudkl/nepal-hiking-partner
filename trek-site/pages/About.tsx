@@ -4,51 +4,45 @@
 
 const teamMembers = [
   {
-    name: 'Raj Sharma',
-    role: 'Founder & Lead Guide',
-    desc: 'With 18+ years of Himalayan trekking experience, Raj founded Nepal Hiking Partner to share his passion for authentic mountain adventures.',
+    name: 'Prabesh Thakuri',
+    role: 'Senior Trekking Guide & High-Altitude Specialist',
+    desc: 'A core pillar of Nepal Hiking Partner since the beginning. Prabesh has successfully led diverse international clients across almost every major trekking trail in Nepal. Highly recommended for his calm demeanor and safety-first approach, he specializes in the Manaslu Circuit and remote, restricted trekking regions.',
     image: '👨‍🏔️'
   },
   {
-    name: 'Priya Thapa',
-    role: 'Operations Manager',
-    desc: 'Priya ensures every trek runs seamlessly, from logistics to guest comfort. Her attention to detail creates unforgettable experiences.',
+    name: 'Divya Dulal',
+    role: 'Iconic Trekking Guide & Cultural Navigator',
+    desc: 'An iconic figure at Nepal Hiking Partner bringing passion and expertise since inception. Divya is an expert navigator through the Everest, Annapurna, Manaslu, and Kanchenjunga regions. Her deep knowledge of local cultures ensures every group experiences the absolute best of the Himalayas.',
+    image: '👩‍🏔️'
+  },
+  {
+    name: 'Sapna Khadka',
+    role: 'Administration & Guest Relations',
+    desc: 'The backbone of our operations, managing administration and strategic partnerships. As a passionate travel enthusiast with exceptional communication skills, Sapna connects effortlessly with travelers worldwide, ensuring every journey is smooth, coordinated, and stress-free from day one.',
     image: '👩‍💼'
-  },
-  {
-    name: 'Ankit Paudel',
-    role: 'Senior Guide',
-    desc: 'Ankit\'s deep knowledge of Nepal\'s hidden trails and local cultures makes every trek educational and meaningful.',
-    image: '👨‍🎓'
-  },
-  {
-    name: 'Maya Kumari',
-    role: 'Safety Coordinator',
-    desc: 'Maya prioritizes every trekker\'s wellbeing with rigorous safety protocols and emergency preparedness training.',
-    image: '👩‍⚕️'
   },
 ]
 
 const values = [
   {
-    icon: '🏔️',
-    title: 'Authentic Experience',
-    desc: 'We believe in genuine connections with Nepal\'s mountains and people, not cookie-cutter tourist routes.',
-  },
-  {
-    icon: '🤝',
-    title: 'Community First',
-    desc: 'Supporting local guides, homestays, and businesses is core to our mission of sustainable tourism.',
-  },
-  {
     icon: '🛡️',
-    title: 'Safety Excellence',
-    desc: 'Your well-being matters most. We invest in training, equipment, and protocols that exceed industry standards.',
+    title: 'Safety & Security',
+    desc: 'Your safety and satisfaction are our utmost priorities. Professional guides, proper protocols, and rigorous training at every step.',
+  },
+  {
+    icon: '👥',
+    title: 'Family Connection',
+    desc: 'Come as a client, leave as family. We build lifelong connections and create authentic, deeply immersive mountain experiences.',
+  },
+  {
+    icon: '👩‍🤝‍👩',
+    title: 'Empower Women',
+    desc: 'We proudly support female trekking guides and create safe environments for solo female travelers and small group adventures.',
   },
   {
     icon: '🌍',
-    title: 'Environmental Care',
-    desc: 'We\'re committed to preserving Nepal\'s pristine mountains for future generations through responsible tourism.',
+    title: 'Sustainable Tourism',
+    desc: 'Deeply committed to responsible travel and supporting local communities through meaningful, inclusive, and sustainable tourism practices.',
   },
 ]
 
@@ -460,37 +454,37 @@ export default function About() {
         {/* Hero */}
         <section className="about-hero">
           <h1>About <span className="accent">Nepal Hiking Partner</span></h1>
-          <p>Crafting unforgettable Himalayan adventures since 2006. We believe in authentic experiences, sustainable tourism, and creating memories that last a lifetime.</p>
+          <p>Welcome to Nepal Hiking Partner, your trusted companion in the heart of the Himalayas. Our journey is led by our founder, Dhurba Panthi, a licensed trekking guide with 10 years of mountain expertise. Guiding passionately since 2018, Dhurba and our dedicated team have been transforming Himalayan treks into thrilling, well-crafted, and secure journeys for travelers worldwide.</p>
         </section>
 
         {/* Mission */}
         <section className="mission-section">
           <div className="mission-content">
             <div className="mission-text">
-              <h2>Our <span className="accent">Mission</span></h2>
+              <h2>Our <span className="accent">Philosophy</span></h2>
               <p>
-                We're on a mission to share the breathtaking beauty and rich culture of Nepal's Himalayas with travelers who crave authentic, transformative adventures.
+                "Come as a Client, Leave as Family"
               </p>
               <p>
-                Every trek is carefully designed to balance your physical capabilities with meaningful interactions with local communities, pristine nature, and your own personal growth.
+                At Nepal Hiking Partner, your safety and satisfaction are our utmost priorities. We don't just organize trips; we build lifelong connections. We believe in providing an authentic, safe, and deeply immersive mountain experience where you join us as a guest but return home as part of our global trekking family.
               </p>
               <div className="mission-highlight">
-                <p>✨ We don't just guide treks—we create life-changing journeys that connect people to mountains and each other.</p>
+                <p>✨ Experience the Himalayas not just as a tourist, but through the eyes of local experts who care.</p>
               </div>
             </div>
             <div className="mission-text">
-              <h2>Why <span className="accent">Choose Us?</span></h2>
+              <h2>Empowering <span className="accent">Sustainable Tourism</span></h2>
               <p>
-                <strong>Experienced Guides:</strong> Our team has 200+ combined years of Himalayan experience.
+                We are deeply committed to inclusivity and responsible travel. We proudly support and collaborate with professional female trekking guides, actively encouraging and creating a safe environment for solo female travelers and small group adventures.
               </p>
               <p>
-                <strong>Small Groups:</strong> We keep groups intimate (8-12 people) for personalized attention and genuine connections.
+                Our mission is to create authentic, sustainable tourism experiences that:
               </p>
               <p>
-                <strong>Community-Focused:</strong> 40% of our revenue goes directly to local communities and homestays.
-              </p>
-              <p>
-                <strong>Safety First:</strong> Rigorous protocols, professional training, and emergency preparedness at every step.
+                ✓ Support local communities<br/>
+                ✓ Empower women in the trekking industry<br/>
+                ✓ Preserve the natural environment<br/>
+                ✓ Ensure traveler safety and satisfaction
               </p>
             </div>
           </div>
@@ -517,20 +511,20 @@ export default function About() {
         <section className="stats-section">
           <div className="stats-grid">
             <div className="stat-item">
-              <h3>18+</h3>
-              <p>Years in Business</p>
+              <h3>10+</h3>
+              <p>Years Experience (Founder)</p>
             </div>
             <div className="stat-item">
-              <h3>15K+</h3>
-              <p>Happy Trekkers</p>
+              <h3>3</h3>
+              <p>Expert Guides</p>
             </div>
             <div className="stat-item">
               <h3>25+</h3>
               <p>Unique Treks</p>
             </div>
             <div className="stat-item">
-              <h3>98%</h3>
-              <p>Satisfaction Rate</p>
+              <h3>100%</h3>
+              <p>Safety Focus</p>
             </div>
           </div>
         </section>
@@ -557,9 +551,23 @@ export default function About() {
 
         {/* CTA */}
         <section className="about-cta">
-          <h2>Ready for Your Adventure?</h2>
-          <p>Join thousands of trekkers who've discovered the magic of the Himalayas with Nepal Hiking Partner.</p>
+          <h2>Join Our Trekking Family</h2>
+          <p>Experience the Himalayas through the eyes of local experts who genuinely care. Start your transformation with Nepal Hiking Partner today.</p>
           <button className="cta-button">Explore Our Treks</button>
+        </section>
+
+        {/* Contact Info */}
+        <section style={{
+          padding: '60px 24px',
+          textAlign: 'center',
+          maxWidth: '600px',
+          margin: '40px auto',
+          borderTop: '1px solid rgba(0, 200, 224, 0.3)',
+          color: 'rgba(255,255,255,0.72)'
+        }}>
+          <h3 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '28px', letterSpacing: '1px', marginBottom: '16px', color: '#fff' }}>Nepal Hiking Partner</h3>
+          <p style={{ margin: '8px 0', fontSize: '15px' }}>📍 JP Road, Thamel, Kathmandu, Nepal</p>
+          <p style={{ margin: '0', fontSize: '15px' }}>Crafting unforgettable Himalayan adventures since 2018</p>
         </section>
       </div>
     </>
