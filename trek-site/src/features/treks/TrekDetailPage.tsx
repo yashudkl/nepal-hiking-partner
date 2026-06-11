@@ -9,15 +9,15 @@ interface TrekProps {
 }
 
 const galleryMap: Record<string, string[]> = {
-  'everest-three-pass': ['everest_threepass.png'],
-  'everest-base-camp': ['everestbasecamp.png'],
-  'langtang-trek': ['langtang.png'],
-  'narphu-valley': ['narphu_valley.png'],
-  'mardi-himal': ['mardi.png'],
-  'annapurna-base-camp': ['annapurna_base_camp.png'],
-  gosaikunda: ['gosaikunda.jpg'],
-  'annapurna-circuit': ['annapurna_circuit.png'],
-  'manaslu-circuit': ['manaslu.png', 'manaslu.JPG'],
+  'everest-three-pass': ['everest_threepass.webp'],
+  'everest-base-camp': ['everestbasecamp.webp'],
+  'langtang-trek': ['langtang.webp'],
+  'narphu-valley': ['narphu_valley.webp'],
+  'mardi-himal': ['mardi.webp'],
+  'annapurna-base-camp': ['annapurna_base_camp.webp'],
+  gosaikunda: ['gosaikunda.webp'],
+  'annapurna-circuit': ['annapurna_circuit.webp'],
+  'manaslu-circuit': ['manaslu.webp'],
 }
 
 export default function TrekDetailPage({ params }: TrekProps) {

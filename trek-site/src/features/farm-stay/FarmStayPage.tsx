@@ -14,11 +14,11 @@ const amenities = [
 ]
 
 const galleryImages = [
-  '/assets/resunga-farm-stay-and-retreat.jpeg',
-  '/assets/annapurna-base-camp/annapurna_base_camp.png',
-  '/assets/annapurna-circuit/annapurna_circuit.png',
-  '/assets/gosaikunda/gosaikunda.jpg',
-  '/assets/langtang-trek/langtang.png',
+  '/assets/resunga-farm-stay-and-retreat.webp',
+  '/assets/annapurna-base-camp/annapurna_base_camp.webp',
+  '/assets/annapurna-circuit/annapurna_circuit.webp',
+  '/assets/gosaikunda/gosaikunda.webp',
+  '/assets/langtang-trek/langtang.webp',
 ]
 
 export default function FarmStayPage() {
