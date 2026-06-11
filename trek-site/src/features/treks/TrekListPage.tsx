@@ -12,9 +12,9 @@ export default function TrekListPage() {
         <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">Trek Catalogue</p>
           <div className="mt-4 grid gap-6 lg:grid-cols-[0.65fr_0.35fr] lg:items-end">
-            <h1 className="text-5xl font-bold tracking-tight text-neutral-900 md:text-6xl">Choose the right Himalayan route.</h1>
+            <h1 className="text-5xl font-bold tracking-tight text-neutral-900 md:text-6xl">Explore our available treks.</h1>
             <p className="text-base leading-7 text-neutral-600">
-              Scan difficulty, duration, altitude, and season without visual noise. Every route is guided by local mountain professionals.
+              Scan difficulty, duration, altitude, and season without visual noise. Every route is guided by experienced trekking guide.
             </p>
           </div>
         </div>

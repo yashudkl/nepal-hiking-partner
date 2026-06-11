@@ -59,14 +59,14 @@ export default function HomePage() {
               </div>
             </div>
             <div className="mt-5 inline-block border-l-4 border-neutral-300 bg-neutral-50 px-4 py-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Current Featured Trek</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Featured Treks</p>
               <p className="mt-1 text-xl font-bold text-neutral-900">{activeTrek.title}</p>
             </div>
             <h1 className="mt-5 text-5xl font-bold leading-[0.95] tracking-tight text-neutral-900 md:text-7xl">
               Precise Himalayan trips for serious travelers.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-neutral-600">
-              Curated treks, mindful retreats, and local-led mountain journeys across Nepal with clear planning and dependable support.
+              Curated treks, mindful retreats, and mountain and himalayan journeys across Nepal with clear planning and dependable support.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <button
