@@ -1,22 +1,30 @@
-'use client'
+"use client"
 
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import dhruvImg from '@/assets/members/dhruv.webp'
+import prabeshImg from '@/assets/members/prabesh.webp'
+import divyaImg from '@/assets/members/divya.webp'
+import sapnaImg from '@/assets/members/sapna.webp'
 
 const teamMembers = [
   {
     name: 'Prabesh Thakuri',
     role: 'Senior Trekking Guide & High-Altitude Specialist',
     desc: 'A core pillar of Nepal Hiking Partner since the beginning. Prabesh has successfully led diverse international clients across almost every major trekking trail in Nepal. He is highly recommended for his calm demeanor and safety-first approach.',
+    image: prabeshImg,
   },
   {
     name: 'Divya Dulal',
     role: 'Iconic Trekking Guide & Cultural Navigator',
     desc: 'Divya brings deep route knowledge across Everest, Annapurna, Manaslu, and Kanchenjunga. Her understanding of local culture helps every group experience the Himalayas with context and care.',
+    image: divyaImg,
   },
   {
     name: 'Sapna Khadka',
     role: 'Administration & Guest Relations',
     desc: 'Sapna manages administration, communication, and guest coordination so every journey is smooth, practical, and stress-free from the first message.',
+    image: sapnaImg,
   },
 ]
 
@@ -53,18 +61,36 @@ export default function AboutPage() {
               Nepal Hiking Partner is led by founder Dhurba Panthi, a licensed trekking guide with more than 10 years of mountain expertise. Since 2018, the team has built guided journeys around safety, cultural respect, and practical planning.
             </p>
           </div>
-          <div className="grid grid-cols-2 border border-neutral-200 bg-white">
-            {[
-              ['Founded', '2018'],
-              ['Base', 'Kathmandu'],
-              ['Focus', 'Guided Treks'],
-              ['Approach', 'Local-first'],
-            ].map(([label, value], index) => (
-              <div key={label} className={`p-5 ${index < 2 ? 'border-b border-neutral-200' : ''} ${index % 2 === 0 ? 'border-r border-neutral-200' : ''}`}>
-                <div className="text-xs font-bold uppercase tracking-[0.14em] text-neutral-500">{label}</div>
-                <div className="mt-2 text-xl font-bold text-neutral-900">{value}</div>
+          <div className="border border-neutral-200 bg-white p-6">
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">Founder</p>
+            <h2 className="mt-3 text-2xl font-bold text-neutral-900">Dhurba Panthi , Founder & Licensed Guide</h2>
+            <div className="mt-4 lg:flex lg:items-start">
+              <div className="flex-shrink-0">
+                <Image src={dhruvImg} alt="Dhurba Panthi" width={96} height={96} className="h-24 w-24 rounded-full object-cover bg-neutral-100" />
               </div>
-            ))}
+              <div className="mt-4 lg:mt-0 lg:ml-6">
+                <p className="text-sm leading-7 text-neutral-600">
+                  Dhurba Panthi is a licensed trekking guide with 10 years of mountain expertise. Guiding passionately since 2018, Dhurba leads the team in crafting safe, immersive, and well-organised Himalayan journeys for travellers worldwide.
+                </p>
+
+                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.12em] text-neutral-500">Base</div>
+                    <div className="mt-1 text-sm font-bold text-neutral-900">Kathmandu</div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.12em] text-neutral-500">Phone</div>
+                    <div className="mt-1 text-sm font-bold text-neutral-900">+977-9843756464</div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.12em] text-neutral-500">Email</div>
+                    <div className="mt-1 text-sm font-bold text-neutral-900 whitespace-normal break-words">
+                      <a href="mailto:dhurbananthi@gmail.com" className="underline block w-full break-words">dhurbananthi@gmail.com</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -103,24 +129,33 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
-        <div className="max-w-2xl">
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">Team</p>
-          <h2 className="mt-3 text-3xl font-bold text-neutral-900">People behind the experience.</h2>
-        </div>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {teamMembers.map((member) => (
-            <article key={member.name} className="border border-neutral-200 bg-white p-6">
-              <div className="grid h-14 w-14 place-items-center border border-neutral-300 bg-neutral-50 text-lg font-bold text-neutral-700">
-                {member.name.split(' ').map((part) => part[0]).join('')}
+          <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8">
+          
+
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              <div className="md:col-span-3">
+                <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">Team</p>
+                <h2 className="mt-3 text-3xl font-bold text-neutral-900">People behind the experience.</h2>
               </div>
-              <h3 className="mt-6 text-xl font-bold text-neutral-900">{member.name}</h3>
-              <p className="mt-2 text-sm font-bold text-neutral-500">{member.role}</p>
-              <p className="mt-4 text-sm leading-7 text-neutral-600">{member.desc}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+
+              {teamMembers.map((member) => (
+                <article key={member.name} className="border border-neutral-200 bg-white p-6">
+                  <div className="h-14 w-14 overflow-hidden rounded-full border border-neutral-300 bg-neutral-50">
+                    <Image
+                      src={(member.image as any)}
+                      alt={member.name}
+                      width={56}
+                      height={56}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <h3 className="mt-6 text-xl font-bold text-neutral-900">{member.name}</h3>
+                  <p className="mt-2 text-sm font-bold text-neutral-500">{member.role}</p>
+                  <p className="mt-4 text-sm leading-7 text-neutral-600">{member.desc}</p>
+                </article>
+              ))}
+            </div>
+          </section>
 
       <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8">
         <div className="grid border border-neutral-200 bg-neutral-50 p-8 md:grid-cols-[1fr_auto] md:items-center md:gap-8">
