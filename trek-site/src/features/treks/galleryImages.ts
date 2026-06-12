@@ -89,8 +89,9 @@ import npu10 from '@/assets/NPU/NPU10.webp'
 
 import gosaikunda from '@/assets/gosaikunda.webp'
 
+import type { StaticImageData } from 'next/image'
 
-export const trekAssetGallery: Record<string, string[]> = {
+export const trekAssetGallery: Record<string, (StaticImageData | string)[]> = {
   'annapurna-base-camp': [abc1, abc2, abc3, abc4, abc5, abc6, abc7, abc8, abc9, abc10],
   'annapurna-circuit': [ac1, ac2, ac3, ac4, ac5, ac6, ac7, ac8, ac9, ac10],
   'everest-base-camp': [ebc1, ebc2, ebc3, ebc4, ebc5, ebc6, ebc7, ebc8, ebc9, ebc10],
