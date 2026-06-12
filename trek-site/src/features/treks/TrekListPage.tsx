@@ -23,13 +23,38 @@ export default function TrekListPage() {
             <h1 className="text-5xl font-bold tracking-tight text-neutral-900 md:text-6xl">Explore our available treks.</h1>
             <div className="w-full">
               <label htmlFor="trek-search" className="sr-only">Search treks</label>
-              <input
-                id="trek-search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search treks by name or subtitle"
-                className="w-full rounded-md border border-neutral-200 px-4 py-3 text-sm placeholder:text-neutral-400"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                    <path fillRule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387a1 1 0 01-1.414 1.414l-4.387-4.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clipRule="evenodd" />
+                  </svg>
+                </span>
+
+                <input
+                  id="trek-search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search treks by name or subtitle"
+                  className="w-full rounded-lg border border-neutral-200 bg-white px-12 py-3 text-sm placeholder:text-neutral-400 shadow-sm transition focus:shadow-md focus:outline-none focus:border-primary-600 focus:ring-2 focus:ring-primary-100"
+                />
+
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery('')}
+                    aria-label="Clear search"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-neutral-100 p-1 text-neutral-600 hover:bg-neutral-200"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden>
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-2 flex justify-end">
+                <p className="text-sm font-semibold text-neutral-700">Showing {filtered.length} results</p>
+              </div>
             </div>
           </div>
         </div>

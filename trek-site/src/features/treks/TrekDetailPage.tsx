@@ -3,6 +3,7 @@
 import { use, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '@/data/treks'
+import trekAssetGallery from './galleryImages'
 
 interface TrekProps {
   params: Promise<{ id: string }>
@@ -25,7 +26,8 @@ export default function TrekDetailPage({ params }: TrekProps) {
   const { id } = use(params)
   const trek = treks.find((item) => item.id === id)
   const [expandedDay, setExpandedDay] = useState<number | null>(0)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [selectedImage, setSelectedImage] = useState(0)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
 
   if (!trek) {
     return (
@@ -40,9 +42,10 @@ export default function TrekDetailPage({ params }: TrekProps) {
     )
   }
 
-  const galleryImages = (galleryMap[id] || []).map((name) => `/assets/${id}/${name}`)
+  const assetImages = trekAssetGallery[id] || []
+  const galleryImages = assetImages.length > 0 ? assetImages : (galleryMap[id] || []).map((name) => `/assets/${id}/${name}`)
   const images = galleryImages.length > 0 ? galleryImages : [trek.image]
-  const currentImage = images[currentImageIndex] || trek.image
+  const normalizedImages = images.map((img) => (typeof img === 'string' ? img : (img as any)?.src || (img as any)?.default || ''))
 
   return (
     <div className="bg-white">
@@ -74,45 +77,58 @@ export default function TrekDetailPage({ params }: TrekProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-        <div className="grid gap-4">
-          <div className="relative border border-neutral-200 bg-neutral-100">
-            <img src={currentImage} alt={`${trek.title} gallery`} className="aspect-[16/9] w-full object-cover" />
-            {images.length > 1 && (
-              <div className="absolute inset-x-4 top-1/2 flex -translate-y-1/2 justify-between">
+      {isLightboxOpen && (
+        <div className="fixed inset-0 z-[70] grid place-items-center bg-white/95 p-5">
+          <div className="w-full max-w-5xl border border-neutral-700 bg-white p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm font-bold text-neutral-700">{selectedImage + 1} / {normalizedImages.length}</p>
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)}
-                  className="border border-white bg-white px-4 py-3 text-lg font-bold text-neutral-900"
-                  aria-label="Previous image"
+                  onClick={() => setSelectedImage((s) => (s - 1 + images.length) % images.length)}
+                  className="border border-neutral-300 px-3 py-2 text-sm font-bold text-neutral-900"
                 >
                   ‹
                 </button>
                 <button
                   type="button"
-                  onClick={() => setCurrentImageIndex((prev) => (prev + 1) % images.length)}
-                  className="border border-white bg-white px-4 py-3 text-lg font-bold text-neutral-900"
-                  aria-label="Next image"
+                  onClick={() => setSelectedImage((s) => (s + 1) % images.length)}
+                  className="border border-neutral-300 px-3 py-2 text-sm font-bold text-neutral-900"
                 >
                   ›
                 </button>
-              </div>
-            )}
-          </div>
-          {images.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto">
-              {images.map((image, index) => (
-                <button
-                  key={image}
-                  type="button"
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`border p-1 ${currentImageIndex === index ? 'border-neutral-900' : 'border-neutral-200'}`}
-                >
-                  <img src={image} alt={`${trek.title} thumbnail ${index + 1}`} className="h-16 w-24 object-cover" />
+                <button type="button" onClick={() => setIsLightboxOpen(false)} className="border border-neutral-300 px-4 py-2 text-sm font-bold text-neutral-900">
+                  Close
                 </button>
-              ))}
+              </div>
             </div>
-          )}
+            <img src={normalizedImages[selectedImage]} alt={`Selected ${selectedImage + 1}`} className="max-h-[70vh] w-full object-contain" />
+          </div>
+        </div>
+      )}
+
+      <section className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-4">
+          {normalizedImages.slice(0, 5).map((image, index) => (
+            <button
+              key={String(image) + index}
+              type="button"
+              onClick={() => {
+                setSelectedImage(index)
+                setIsLightboxOpen(true)
+              }}
+              className={`relative border border-neutral-200 bg-neutral-100 ${index === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}
+            >
+              <img src={image} alt={`${trek.title} view ${index + 1}`} className="aspect-[4/3] h-full w-full object-cover" />
+              {index === 4 && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="rounded-lg bg-black/65 px-4 py-2 text-white font-bold text-sm shadow-lg backdrop-blur-sm">
+                    View all {Math.min(normalizedImages.length, 10)} photos
+                  </div>
+                </div>
+              )}
+            </button>
+          ))}
         </div>
       </section>
 
