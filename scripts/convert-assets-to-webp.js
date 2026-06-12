@@ -18,7 +18,8 @@ async function walk(dir) {
         await walk(full);
       } else {
         const ext = path.extname(entry.name).toLowerCase();
-        if (ext === '.png') await convert(full);
+        // convert common raster formats to webp
+        if (ext === '.png' || ext === '.jpg' || ext === '.jpeg') await convert(full);
       }
     }
   } catch (err) {
@@ -27,7 +28,7 @@ async function walk(dir) {
 }
 
 async function convert(filePath) {
-  const outPath = filePath.replace(/\.png$/i, '.webp');
+  const outPath = filePath.replace(/\.(png|jpe?g)$/i, '.webp');
   try {
     const outExists = await fs.stat(outPath).then(() => true).catch(() => false);
     if (outExists) {
@@ -36,7 +37,9 @@ async function convert(filePath) {
       return;
     }
 
+    // perform conversion with reasonable defaults
     await sharp(filePath)
+      .rotate() // respect EXIF orientation
       .webp({ quality: 80, reductionEffort: 6 })
       .toFile(outPath);
 
