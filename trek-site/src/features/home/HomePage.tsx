@@ -55,7 +55,6 @@ export default function HomePage() {
   const [reviewerName, setReviewerName] = useState('')
   const [reviewerRating, setReviewerRating] = useState('5')
   const [reviewerComment, setReviewerComment] = useState('')
-  const [reviewSuccess, setReviewSuccess] = useState(false)
   const [reviewStatus, setReviewStatus] = useState<'idle' | 'saved' | 'saved-local' | 'error'>('idle')
   const [reviews, setReviews] = useState<any[]>([])
   const activeTrek = treks[currentSlide]
@@ -235,7 +234,6 @@ export default function HomePage() {
                 type="button"
                 onClick={() => {
                   setIsReviewOpen(true)
-                  setReviewSuccess(false)
                 }}
                 className="inline-flex items-center gap-2 rounded-md border border-primary-600 bg-primary-600 px-4 py-3 text-sm font-bold text-white hover:bg-primary-700"
               >
@@ -280,7 +278,6 @@ export default function HomePage() {
                     if (!res.ok) throw new Error('API error')
 
                     setIsReviewOpen(false)
-                    setReviewSuccess(true)
                     setReviewStatus('saved')
                     setReviewerName('')
                     setReviewerRating('5')
@@ -298,7 +295,6 @@ export default function HomePage() {
                       existing.unshift({ ...payload, createdAt: new Date().toISOString() })
                       localStorage.setItem(key, JSON.stringify(existing))
                       setIsReviewOpen(false)
-                      setReviewSuccess(true)
                       setReviewStatus('saved-local')
                       setReviewerName('')
                       setReviewerRating('5')
