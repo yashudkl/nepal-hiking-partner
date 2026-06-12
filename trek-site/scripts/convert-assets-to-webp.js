@@ -9,6 +9,7 @@ const startDirs = [
   path.join(projectRoot, 'src', 'assets'),
 ];
 const backupsRoot = path.join(projectRoot, 'backup', 'originals');
+const optimizedRoot = path.join(projectRoot, 'optimized-assets');
 
 async function moveToBackup(filePath) {
   try {
@@ -34,7 +35,8 @@ async function walk(dir) {
         await walk(full);
       } else {
         const ext = path.extname(entry.name).toLowerCase();
-        if (ext === '.png' || ext === '.jpg' || ext === '.jpeg') await convert(full);
+        // process common raster formats and webp
+        if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.webp') await convert(full);
       }
     }
   } catch (err) {
@@ -43,23 +45,34 @@ async function walk(dir) {
 }
 
 async function convert(filePath) {
-  const outPath = filePath.replace(/\.(png|jpe?g)$/i, '.webp');
+  const ext = path.extname(filePath).toLowerCase();
   try {
-    const outExists = await fs.stat(outPath).then(() => true).catch(() => false);
-    if (outExists) {
-      await moveToBackup(filePath);
-      console.log('Moved original (webp exists):', filePath);
+    // write optimized output into optimizedRoot to avoid overwriting locked files
+    const rel = path.relative(projectRoot, filePath);
+    const targetRel = rel.replace(/\.(png|jpe?g)$/i, '.webp');
+    const optimizedOut = ext === '.webp' ? path.join(optimizedRoot, rel) : path.join(optimizedRoot, targetRel);
+
+    await fs.mkdir(path.dirname(optimizedOut), { recursive: true });
+
+    if (ext === '.webp') {
+      await sharp(filePath)
+        .rotate()
+        .resize({ width: 1600, withoutEnlargement: true })
+        .webp({ quality: 60, reductionEffort: 6 })
+        .toFile(optimizedOut);
+
+      console.log('Re-encoded webp into optimized folder:', optimizedOut);
       return;
     }
 
+    // For PNG/JPEG -> produce .webp (optimized)
     await sharp(filePath)
-      .webp({ quality: 80, reductionEffort: 6 })
-      .toFile(outPath);
+      .rotate()
+      .resize({ width: 1600, withoutEnlargement: true })
+      .webp({ quality: 60, reductionEffort: 6 })
+      .toFile(optimizedOut);
 
-    // move original to backup after successful conversion
-    await moveToBackup(filePath);
-
-    console.log('Converted and moved original to backup:', filePath, '->', outPath);
+    console.log('Converted into optimized folder:', filePath, '->', optimizedOut);
   } catch (err) {
     console.error('Failed converting', filePath, err.message || err);
   }
