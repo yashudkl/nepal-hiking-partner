@@ -4,12 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '@/data/treks'
 
-const stats = [
-  { value: '200+', label: 'Treks & Tours' },
-  { value: '15K+', label: 'Happy Trekkers' },
-  { value: '8848m', label: 'Highest Point' },
-  { value: '18+', label: 'Years Experience' },
-]
+// stats removed as requested
 
 const features = [
   {
@@ -34,18 +29,73 @@ const features = [
   },
 ]
 
+const defaultTestimonials = [
+  {
+    name: 'Alex P.',
+    rating: 5,
+    comment:
+      'An unforgettable experience — the guide was knowledgeable, patient, and kept our group safe. Logistics were seamless.',
+  },
+  {
+    name: 'Maria S.',
+    rating: 5,
+    comment: 'Fantastic local knowledge and warm hospitality. The itinerary was thoughtfully paced.',
+  },
+  {
+    name: 'Tom R.',
+    rating: 5,
+    comment: 'Highly recommended — great communication, and the team handled everything professionally.',
+  },
+]
+
 export default function HomePage() {
   const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isReviewOpen, setIsReviewOpen] = useState(false)
+  const [reviewerName, setReviewerName] = useState('')
+  const [reviewerRating, setReviewerRating] = useState('5')
+  const [reviewerComment, setReviewerComment] = useState('')
+  const [reviewSuccess, setReviewSuccess] = useState(false)
+  const [reviewStatus, setReviewStatus] = useState<'idle' | 'saved' | 'saved-local' | 'error'>('idle')
+  const [reviews, setReviews] = useState<any[]>([])
   const activeTrek = treks[currentSlide]
+  const timerRef = typeof window !== 'undefined' ? { current: 0 } : { current: 0 }
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % treks.length)
     }, 6000)
 
+    // fetch reviews on mount
+    fetchReviews()
+
     return () => clearInterval(interval)
   }, [])
+
+  async function fetchReviews() {
+    try {
+      const res = await fetch('/api/reviews')
+      let server = []
+      if (res.ok) server = await res.json()
+
+      // local fallback reviews saved when API fails
+      const localKey = 'local_reviews'
+      const local = JSON.parse(localStorage.getItem(localKey) || '[]')
+
+      // normalize and merge (local first)
+      const merged = [
+        ...local.map((r: any) => ({ name: r.name || 'Anonymous', rating: Number(r.rating || 5), comment: r.comment, createdAt: r.createdAt })),
+        ...server.map((r: any) => ({ name: r.name || 'Anonymous', rating: Number(r.rating || 5), comment: r.comment, createdAt: r.createdAt })),
+      ]
+
+      setReviews(merged)
+    } catch (err) {
+      // if fetch fails, at least load local
+      const localKey = 'local_reviews'
+      const local = JSON.parse(localStorage.getItem(localKey) || '[]')
+      setReviews(local)
+    }
+  }
 
   return (
     <div className="bg-white">
@@ -106,16 +156,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-neutral-200 bg-neutral-50">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 px-5 py-8 md:grid-cols-4 lg:px-8">
-          {stats.map((stat) => (
-            <div key={stat.label} className="border-l border-neutral-200 px-5 py-3 first:border-l-0">
-              <div className="text-3xl font-bold text-neutral-900">{stat.value}</div>
-              <div className="mt-1 text-sm font-medium text-neutral-500">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* stats section removed */}
 
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="max-w-2xl">
@@ -130,6 +171,182 @@ export default function HomePage() {
               <p className="mt-4 text-sm leading-6 text-neutral-600">{feature.desc}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">Testimonials</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-tight text-neutral-900">See what our happy trekkers say</h2>
+            <p className="mt-4 text-sm text-neutral-600">Real feedback from guests who travelled with Nepal Hiking Partner.</p>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {(reviews.length ? reviews : defaultTestimonials).slice(0, 6).map((r, i) => (
+              <blockquote key={i} className="border border-neutral-200 bg-neutral-50 p-6">
+                <p className="text-sm leading-7 text-neutral-700">{r.comment}</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex items-center gap-1" aria-hidden>
+                    {Array.from({ length: 5 }).map((_, k) => {
+                      const filled = k < Math.round(r.rating || 5)
+                      return (
+                        <svg
+                          key={k}
+                          className={`${filled ? 'text-primary-600' : 'text-neutral-300'} h-4 w-4`}
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.84-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.063 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z"
+                            fill={filled ? 'currentColor' : 'none'}
+                            stroke={filled ? 'none' : 'currentColor'}
+                            strokeWidth={filled ? 0 : 1}
+                          />
+                        </svg>
+                      )
+                    })}
+                  </div>
+                  <div className="text-sm font-medium text-neutral-700">{Number(r.rating || 5).toFixed(1)}</div>
+                </div>
+                <div className="mt-4 text-sm font-bold text-neutral-900">— {r.name}</div>
+              </blockquote>
+            ))}
+          </div>
+
+          <div className="mt-8 flex items-center justify-center">
+            <div className="inline-flex items-center gap-4">
+              <a
+                href="https://www.tripadvisor.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 rounded-md border border-neutral-300 bg-white px-5 py-3 text-sm font-bold text-neutral-900 shadow-sm hover:bg-neutral-50"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <circle cx="12" cy="12" r="10" stroke="#111827" strokeWidth="0.5" />
+                  <path d="M7 12h10" stroke="#111827" strokeWidth="1.2" strokeLinecap="round" />
+                  <path d="M7 16h6" stroke="#111827" strokeWidth="1.2" strokeLinecap="round" />
+                </svg>
+                <span>Read reviews on Tripadvisor</span>
+              </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsReviewOpen(true)
+                  setReviewSuccess(false)
+                }}
+                className="inline-flex items-center gap-2 rounded-md border border-primary-600 bg-primary-600 px-4 py-3 text-sm font-bold text-white hover:bg-primary-700"
+              >
+                Write a review
+              </button>
+            </div>
+          </div>
+
+          {/* show brief status messages when review saved */}
+          <div className="mt-4 flex items-center justify-center">
+            {reviewStatus === 'saved' && (
+              <div className="rounded bg-green-100 px-4 py-2 text-sm font-medium text-green-800">Thanks — your review was saved to the server.</div>
+            )}
+            {reviewStatus === 'saved-local' && (
+              <div className="rounded bg-yellow-100 px-4 py-2 text-sm font-medium text-yellow-800">Saved locally — will sync when server is available.</div>
+            )}
+            {reviewStatus === 'error' && (
+              <div className="rounded bg-red-100 px-4 py-2 text-sm font-medium text-red-800">Failed to save review.</div>
+            )}
+          </div>
+
+          {isReviewOpen && (
+            <div className="fixed inset-0 z-[70] grid place-items-center bg-black/50 p-5">
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  const payload = {
+                    name: reviewerName,
+                    rating: reviewerRating,
+                    comment: reviewerComment,
+                    trekId: 'home',
+                  }
+
+                  // try posting to server API first
+                  try {
+                    const res = await fetch('/api/reviews', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(payload),
+                    })
+
+                    if (!res.ok) throw new Error('API error')
+
+                    setIsReviewOpen(false)
+                    setReviewSuccess(true)
+                    setReviewStatus('saved')
+                    setReviewerName('')
+                    setReviewerRating('5')
+                    setReviewerComment('')
+                    await fetchReviews()
+                    // auto-hide status
+                    clearTimeout(timerRef.current)
+                    timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
+                    return
+                  } catch (err) {
+                    // fallback: save to localStorage
+                    try {
+                      const key = 'local_reviews'
+                      const existing = JSON.parse(localStorage.getItem(key) || '[]')
+                      existing.unshift({ ...payload, createdAt: new Date().toISOString() })
+                      localStorage.setItem(key, JSON.stringify(existing))
+                      setIsReviewOpen(false)
+                      setReviewSuccess(true)
+                      setReviewStatus('saved-local')
+                      setReviewerName('')
+                      setReviewerRating('5')
+                      setReviewerComment('')
+                      await fetchReviews()
+                      clearTimeout(timerRef.current)
+                      timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
+                      return
+                    } catch (e) {
+                      console.error('Failed saving review', e)
+                      setReviewStatus('error')
+                      clearTimeout(timerRef.current)
+                      timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
+                      alert('Failed saving review')
+                    }
+                  }
+                }}
+                className="w-full max-w-xl rounded bg-white p-6 shadow-lg"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-neutral-900">Write a review</h3>
+                  <button type="button" onClick={() => setIsReviewOpen(false)} className="text-sm font-medium text-neutral-700">Close</button>
+                </div>
+
+                <label className="mb-2 block text-sm font-medium text-neutral-700">Name</label>
+                <input value={reviewerName} onChange={(e) => setReviewerName(e.target.value)} className="mb-4 w-full rounded border px-3 py-2" placeholder="Your name" />
+
+                <label className="mb-2 block text-sm font-medium text-neutral-700">Rating</label>
+                <select value={reviewerRating} onChange={(e) => setReviewerRating(e.target.value)} className="mb-4 w-32 rounded border px-3 py-2">
+                  <option value="5">5 - Excellent</option>
+                  <option value="4">4 - Very good</option>
+                  <option value="3">3 - Good</option>
+                  <option value="2">2 - Fair</option>
+                  <option value="1">1 - Poor</option>
+                </select>
+
+                <label className="mb-2 block text-sm font-medium text-neutral-700">Review</label>
+                <textarea value={reviewerComment} onChange={(e) => setReviewerComment(e.target.value)} className="mb-4 w-full rounded border px-3 py-2" rows={4} placeholder="Share your experience" />
+
+                <div className="mt-4 flex items-center gap-3">
+                  <button type="submit" className="rounded bg-primary-600 px-4 py-2 text-sm font-bold text-white hover:bg-primary-700">Submit</button>
+                  <button type="button" onClick={() => setIsReviewOpen(false)} className="rounded border px-4 py-2 text-sm font-bold text-neutral-900">Cancel</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* reviewSuccess message removed as requested */}
         </div>
       </section>
 

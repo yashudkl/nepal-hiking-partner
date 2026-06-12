@@ -14,11 +14,13 @@ const amenities = [
 ]
 
 const galleryImages = [
+  // keep the existing resunga farm stay hero image (located in public/assets)
   '/assets/resunga-farm-stay-and-retreat.webp',
-  '/assets/annapurna-base-camp/annapurna_base_camp.webp',
-  '/assets/annapurna-circuit/annapurna_circuit.webp',
-  '/assets/gosaikunda/gosaikunda.webp',
-  '/assets/langtang-trek/langtang.webp',
+  // use only images from the farmstay gallery copied into public/assets/farmstay
+  '/assets/farmstay/IMG_2721.webp',
+  '/assets/farmstay/IMG_2723.webp',
+  '/assets/farmstay/IMG_2724.webp',
+  '/assets/farmstay/IMG_2725.webp',
 ]
 
 export default function FarmStayPage() {
