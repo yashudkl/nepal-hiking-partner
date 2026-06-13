@@ -41,6 +41,13 @@ export default function FarmStayPage() {
     return Math.floor((endTime - startTime) / 86400000) + 1
   }
 
+  function getMinEndDate(start: string) {
+    if (!start) return ''
+    const date = new Date(`${start}T00:00:00`)
+    date.setDate(date.getDate() + MIN_DAYS - 1)
+    return date.toISOString().split('T')[0]
+  }
+
   const days = getDaysInRange(startDate, endDate)
   const price = days * 30
   const router = useRouter()
@@ -190,7 +197,7 @@ export default function FarmStayPage() {
               <input
                 type="date"
                 value={endDate}
-                min={startDate || undefined}
+                min={getMinEndDate(startDate) || undefined}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
               />

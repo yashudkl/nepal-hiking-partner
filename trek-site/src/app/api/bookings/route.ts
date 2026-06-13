@@ -1,3 +1,4 @@
+import type { Collection } from 'mongodb'
 import getClientPromise from '@/lib/mongodb'
 
 function buildDates(start: string, days: number) {
@@ -11,15 +12,42 @@ function buildDates(start: string, days: number) {
   })
 }
 
-function isDuplicateDateError(error: unknown) {
-  return typeof error === 'object' && error !== null && 'code' in error && error.code === 11000
-}
-
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Failed'
 }
 
 const MIN_FARM_STAY_DAYS = 7
+
+async function persistBookingDates(
+  coll: Collection,
+  bookingDocs: Array<{
+    name: string
+    email: string
+    phone: string
+    date: string
+    price: string
+    notes: string
+    createdAt: Date
+  }>,
+) {
+  for (const doc of bookingDocs) {
+    await coll.updateOne(
+      { date: doc.date },
+      {
+        $set: {
+          name: doc.name,
+          email: doc.email,
+          phone: doc.phone,
+          price: doc.price,
+          notes: doc.notes,
+          createdAt: doc.createdAt,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    )
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -55,7 +83,7 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: 'Date already booked' }), { status: 409 })
     }
 
-    // create one booking document per day so the unique index on `date` prevents overlaps
+    // create one booking document per day so each booked date is blocked immediately
     const bookingDocs = dates.map(d => ({
       name,
       email,
@@ -87,18 +115,8 @@ export async function POST(req: Request) {
         throw new Error(data?.error || `Resend responded with ${resp.status}`)
       }
 
-      try {
-        await coll.createIndex({ date: 1 }, { unique: true })
-        if (bookingDocs.length === 1) {
-          await coll.insertOne(bookingDocs[0])
-        } else {
-          await coll.insertMany(bookingDocs)
-        }
-        return new Response(JSON.stringify({ ok: true }), { status: 201 })
-      } catch (err: unknown) {
-        if (isDuplicateDateError(err)) return new Response(JSON.stringify({ error: 'Date already booked' }), { status: 409 })
-        throw err
-      }
+      await persistBookingDates(coll, bookingDocs)
+      return new Response(JSON.stringify({ ok: true }), { status: 201 })
     }
 
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
@@ -117,18 +135,8 @@ export async function POST(req: Request) {
         text,
       })
 
-      try {
-        await coll.createIndex({ date: 1 }, { unique: true })
-        if (bookingDocs.length === 1) {
-          await coll.insertOne(bookingDocs[0])
-        } else {
-          await coll.insertMany(bookingDocs)
-        }
-        return new Response(JSON.stringify({ ok: true }), { status: 201 })
-      } catch (err: unknown) {
-        if (isDuplicateDateError(err)) return new Response(JSON.stringify({ error: 'Date already booked' }), { status: 409 })
-        throw err
-      }
+      await persistBookingDates(coll, bookingDocs)
+      return new Response(JSON.stringify({ ok: true }), { status: 201 })
     }
 
     return new Response(JSON.stringify({ error: 'No email provider configured. Set RESEND_API_KEY or SMTP_* env vars.' }), { status: 500 })
