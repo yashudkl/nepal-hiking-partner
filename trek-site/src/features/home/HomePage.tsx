@@ -50,19 +50,21 @@ const defaultTestimonials = [
 
 export default function HomePage() {
   const router = useRouter()
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentSlide, setCurrentSlide] = useState(() => treks.findIndex((trek) => trek.title === 'Manaslu Circuit Trek'))
   const [isReviewOpen, setIsReviewOpen] = useState(false)
   const [reviewerName, setReviewerName] = useState('')
   const [reviewerRating, setReviewerRating] = useState('5')
   const [reviewerComment, setReviewerComment] = useState('')
   const [reviewStatus, setReviewStatus] = useState<'idle' | 'saved' | 'saved-local' | 'error'>('idle')
   const [reviews, setReviews] = useState<any[]>([])
-  const activeTrek = treks[currentSlide]
+  const safeSlideIndex = currentSlide >= 0 ? currentSlide : 0
+  const activeTrek = treks[safeSlideIndex]
+  const isManasluSlide = activeTrek.title === 'Manaslu Circuit Trek'
   const timerRef = typeof window !== 'undefined' ? { current: 0 } : { current: 0 }
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % treks.length)
+      setCurrentSlide((prev) => ((prev >= 0 ? prev : 0) + 1) % treks.length)
     }, 6000)
 
     // fetch reviews on mount
@@ -108,7 +110,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="mt-5 inline-block border-l-4 border-neutral-300 bg-neutral-50 px-4 py-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Featured Treks</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">{isManasluSlide ? 'Best Seller' : 'Featured Treks'}</p>
               <p className="mt-1 text-xl font-bold text-neutral-900">{activeTrek.title}</p>
             </div>
             <h1 className="mt-5 text-5xl font-bold leading-[0.95] tracking-tight text-neutral-900 md:text-7xl">
@@ -148,7 +150,7 @@ export default function HomePage() {
               key={trek.id}
               type="button"
               onClick={() => setCurrentSlide(index)}
-              className={`h-1.5 flex-1 ${index === currentSlide ? 'bg-primary-600' : 'bg-neutral-300'}`}
+              className={`h-1.5 flex-1 ${index === safeSlideIndex ? 'bg-primary-600' : 'bg-neutral-300'}`}
               aria-label={`Show ${trek.title}`}
             />
           ))}
