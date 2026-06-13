@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     }
 
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-      const nodemailer = (await import('nodemailer')).then(m => m.default)
+      const nodemailer = (await import('nodemailer')).default
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT || 587),
