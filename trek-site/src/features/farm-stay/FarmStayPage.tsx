@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 const amenities = [
   { title: 'Spacious Rooms', desc: 'Comfortable accommodation with mountain views' },
@@ -26,6 +27,47 @@ const galleryImages = [
 export default function FarmStayPage() {
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string>('')
+  const [isBooked, setIsBooked] = useState<boolean>(false)
+  const [checking, setChecking] = useState(false)
+
+  function computePrice(dateString: string) {
+    if (!dateString) return 0
+    const d = new Date(dateString)
+    const day = d.getDay() // 0 = Sunday, 6 = Saturday
+    const isWeekend = day === 0 || day === 6
+    return isWeekend ? 200 : 30
+  }
+
+  const price = computePrice(selectedDate)
+  const router = useRouter()
+
+  useEffect(() => {
+    let mounted = true
+    async function check() {
+      setIsBooked(false)
+      if (!selectedDate) return
+      setChecking(true)
+      try {
+        const res = await fetch(`/api/bookings?date=${encodeURIComponent(selectedDate)}`)
+        if (!mounted) return
+        if (res.ok) {
+          const data = await res.json()
+          setIsBooked(Boolean(data.booked))
+        } else {
+          setIsBooked(false)
+        }
+      } catch (e) {
+        setIsBooked(false)
+      } finally {
+        if (mounted) setChecking(false)
+      }
+    }
+    check()
+    return () => {
+      mounted = false
+    }
+  }, [selectedDate])
 
   return (
     <div className="bg-white">
@@ -124,6 +166,49 @@ export default function FarmStayPage() {
             <div>
               <div className="text-xs font-bold uppercase tracking-[0.14em] text-neutral-500">Services</div>
               <p className="mt-1 text-sm leading-6 text-neutral-600">Accommodation, meals, farm visits, hikes, yoga, meditation, and local cultural experiences.</p>
+            </div>
+            <div className="pt-3 border-t border-neutral-200">
+              <h3 className="text-sm font-bold text-neutral-700">Book a stay</h3>
+              <label className="mt-2 mb-1 block text-xs text-neutral-500">Select date</label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
+              />
+
+              <div className="mt-3 flex items-center justify-between">
+                <div className="text-sm text-neutral-600">Selected</div>
+                <div className="text-sm font-bold text-neutral-900">{selectedDate ? new Date(selectedDate).toLocaleDateString() : '—'}</div>
+              </div>
+
+              <div className="mt-2 flex items-center justify-between">
+                <div className="text-sm text-neutral-600">Price</div>
+                <div className="text-sm font-bold text-neutral-900">{price > 0 ? `$${price}` : '—'}</div>
+              </div>
+
+              <div className="mt-2">
+                {checking ? (
+                  <div className="text-sm text-neutral-500">Checking availability…</div>
+                ) : isBooked ? (
+                  <div className="text-sm font-bold text-red-600">Booked</div>
+                ) : (
+                  selectedDate && <div className="text-sm text-neutral-600">We'll reach out to the contact details you provide soon.</div>
+                )}
+              </div>
+
+              <button
+                type="button"
+                disabled={!selectedDate || isBooked}
+                className="mt-4 w-full rounded bg-neutral-900 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                onClick={() => {
+                  if (!selectedDate || isBooked) return
+                  const params = new URLSearchParams({ date: selectedDate, price: String(price) })
+                  router.push(`/farm-stay/confirm?${params.toString()}`)
+                }}
+              >
+                Book Now
+              </button>
             </div>
           </div>
         </aside>
