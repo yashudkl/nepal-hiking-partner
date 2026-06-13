@@ -25,31 +25,34 @@ const galleryImages = [
 ]
 
 export default function FarmStayPage() {
+  const MIN_DAYS = 7
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<string>('')
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
   const [isBooked, setIsBooked] = useState<boolean>(false)
   const [checking, setChecking] = useState(false)
 
-  function computePrice(dateString: string) {
-    if (!dateString) return 0
-    const d = new Date(dateString)
-    const day = d.getDay() // 0 = Sunday, 6 = Saturday
-    const isWeekend = day === 0 || day === 6
-    return isWeekend ? 200 : 30
+  function getDaysInRange(start: string, end: string) {
+    if (!start || !end) return 0
+    const startTime = new Date(`${start}T00:00:00`).getTime()
+    const endTime = new Date(`${end}T00:00:00`).getTime()
+    if (Number.isNaN(startTime) || Number.isNaN(endTime) || endTime < startTime) return 0
+    return Math.floor((endTime - startTime) / 86400000) + 1
   }
 
-  const price = computePrice(selectedDate)
+  const days = getDaysInRange(startDate, endDate)
+  const price = days * 30
   const router = useRouter()
 
   useEffect(() => {
     let mounted = true
     async function check() {
       setIsBooked(false)
-      if (!selectedDate) return
+      if (!startDate || !days) return
       setChecking(true)
       try {
-        const res = await fetch(`/api/bookings?date=${encodeURIComponent(selectedDate)}`)
+        const res = await fetch(`/api/bookings?start=${encodeURIComponent(startDate)}&days=${encodeURIComponent(String(days))}`)
         if (!mounted) return
         if (res.ok) {
           const data = await res.json()
@@ -57,7 +60,7 @@ export default function FarmStayPage() {
         } else {
           setIsBooked(false)
         }
-      } catch (e) {
+      } catch {
         setIsBooked(false)
       } finally {
         if (mounted) setChecking(false)
@@ -67,7 +70,9 @@ export default function FarmStayPage() {
     return () => {
       mounted = false
     }
-  }, [selectedDate])
+  }, [startDate, days])
+
+  const hasValidRange = Boolean(startDate && endDate && days >= MIN_DAYS)
 
   return (
     <div className="bg-white">
@@ -169,18 +174,47 @@ export default function FarmStayPage() {
             </div>
             <div className="pt-3 border-t border-neutral-200">
               <h3 className="text-sm font-bold text-neutral-700">Book a stay</h3>
-              <label className="mt-2 mb-1 block text-xs text-neutral-500">Select date</label>
+              <label className="mt-2 mb-1 block text-xs text-neutral-500">Start date</label>
               <input
                 type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                value={startDate}
+                onChange={(e) => {
+                  const nextStart = e.target.value
+                  setStartDate(nextStart)
+                  if (endDate && nextStart && endDate < nextStart) setEndDate(nextStart)
+                }}
                 className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
               />
 
-              <div className="mt-3 flex items-center justify-between">
+              <label className="mt-3 mb-1 block text-xs text-neutral-500">End date</label>
+              <input
+                type="date"
+                value={endDate}
+                min={startDate || undefined}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
+              />
+
+              <div className="hidden">
                 <div className="text-sm text-neutral-600">Selected</div>
-                <div className="text-sm font-bold text-neutral-900">{selectedDate ? new Date(selectedDate).toLocaleDateString() : '—'}</div>
+                <div className="text-sm font-bold text-neutral-900">{startDate ? new Date(startDate).toLocaleDateString() : '—'}</div>
               </div>
+
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div className="text-sm text-neutral-600">Selected</div>
+                <div className="text-right text-sm font-bold text-neutral-900">
+                  {hasValidRange ? `${new Date(`${startDate}T00:00:00`).toLocaleDateString()} - ${new Date(`${endDate}T00:00:00`).toLocaleDateString()}` : '-'}
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center justify-between">
+                <div className="text-sm text-neutral-600">Number of days</div>
+                <div className="text-sm font-bold text-neutral-900">{hasValidRange ? days : '-'}</div>
+              </div>
+
+              {!hasValidRange && startDate && endDate && days > 0 && (
+                <div className="mt-2 text-sm text-red-600">Minimum stay is {MIN_DAYS} days.</div>
+              )}
 
               <div className="mt-2 flex items-center justify-between">
                 <div className="text-sm text-neutral-600">Price</div>
@@ -193,17 +227,17 @@ export default function FarmStayPage() {
                 ) : isBooked ? (
                   <div className="text-sm font-bold text-red-600">Booked</div>
                 ) : (
-                  selectedDate && <div className="text-sm text-neutral-600">We'll reach out to the contact details you provide soon.</div>
+                  hasValidRange && <div className="text-sm text-neutral-600">We'll reach out to the contact details you provide soon.</div>
                 )}
               </div>
 
               <button
                 type="button"
-                disabled={!selectedDate || isBooked}
+                disabled={!hasValidRange || isBooked}
                 className="mt-4 w-full rounded bg-neutral-900 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
                 onClick={() => {
-                  if (!selectedDate || isBooked) return
-                  const params = new URLSearchParams({ date: selectedDate, price: String(price) })
+                  if (!hasValidRange || isBooked) return
+                  const params = new URLSearchParams({ start: startDate, days: String(days), price: String(price) })
                   router.push(`/farm-stay/confirm?${params.toString()}`)
                 }}
               >

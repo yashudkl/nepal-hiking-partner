@@ -6,8 +6,18 @@ import { useSearchParams, useRouter } from 'next/navigation'
 export default function ConfirmClient() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const date = searchParams.get('date') || ''
+  const start = searchParams.get('start') || ''
+  const daysParam = Number(searchParams.get('days') || '0')
   const price = searchParams.get('price') || ''
+  const days = daysParam || 0
+
+  function formatRange(startDate: string, daysCount: number) {
+    if (!startDate || !daysCount) return ''
+    const s = new Date(`${startDate}T00:00:00`)
+    const end = new Date(s)
+    end.setDate(s.getDate() + daysCount - 1)
+    return `${s.toLocaleDateString()} — ${end.toLocaleDateString()} (${daysCount} days)`
+  }
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -26,7 +36,7 @@ export default function ConfirmClient() {
       const res = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, date, price, notes }),
+        body: JSON.stringify({ name, email, phone, start, days, price, notes }),
       })
       if (!res.ok) {
         const data = await res.json()
@@ -34,18 +44,18 @@ export default function ConfirmClient() {
       }
       await res.json()
       setSubmitted(true)
-    } catch (err: any) {
-      setError(err.message || 'Failed to send booking')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to send booking')
     } finally {
       setSending(false)
     }
   }
 
-  if (!date) {
+  if (!start || !days) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-20 text-center">
         <p className="text-lg font-bold">No booking found</p>
-        <p className="mt-3 text-sm text-neutral-600">Please select a date on the Farm Stay page.</p>
+        <p className="mt-3 text-sm text-neutral-600">Please select a start date and number of days on the Farm Stay page.</p>
         <div className="mt-6">
           <button className="rounded bg-neutral-900 px-4 py-2 text-sm font-bold text-white" onClick={() => router.push('/farm-stay')}>Back to Farm Stay</button>
         </div>
@@ -61,8 +71,8 @@ export default function ConfirmClient() {
         <div className="mt-6 text-left">
           <div className="text-sm text-neutral-600">Name</div>
           <div className="font-bold text-neutral-900">{name}</div>
-          <div className="mt-3 text-sm text-neutral-600">Date</div>
-          <div className="font-bold text-neutral-900">{new Date(date).toLocaleDateString()}</div>
+          <div className="mt-3 text-sm text-neutral-600">Dates</div>
+          <div className="font-bold text-neutral-900">{formatRange(start, days)}</div>
           <div className="mt-3 text-sm text-neutral-600">Price</div>
           <div className="font-bold text-neutral-900">${price}</div>
         </div>
@@ -77,7 +87,7 @@ export default function ConfirmClient() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
       <h1 className="text-2xl font-bold">Confirm your booking</h1>
-      <p className="mt-2 text-sm text-neutral-600">Date: <span className="font-bold text-neutral-900">{new Date(date).toLocaleDateString()}</span> — Price: <span className="font-bold text-neutral-900">${price}</span></p>
+      <p className="mt-2 text-sm text-neutral-600">Dates: <span className="font-bold text-neutral-900">{formatRange(start, days)}</span> — Price: <span className="font-bold text-neutral-900">${price}</span></p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>
