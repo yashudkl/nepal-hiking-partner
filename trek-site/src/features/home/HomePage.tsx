@@ -182,7 +182,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {(reviews.length ? reviews : []).slice(0, 6).map((r, i) => (
+            {(reviews.length ? reviews : defaultTestimonials).slice(0, 6).map((r, i) => (
               <blockquote key={i} className="border border-neutral-200 bg-neutral-50 p-6">
                 <p className="text-sm leading-7 text-neutral-700">{r.comment}</p>
                 <div className="mt-4 flex items-center gap-3">
