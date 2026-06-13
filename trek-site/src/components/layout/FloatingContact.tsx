@@ -10,7 +10,7 @@ export default function FloatingContact() {
       {isOpen && (
         <div className="mb-3 w-56 border border-neutral-200 bg-white shadow-lg">
           <a
-            href="https://wa.me/977984375646"
+            href="https://wa.me/9779843756464"
             target="_blank"
             rel="noopener noreferrer"
             className="block border-b border-neutral-100 px-4 py-3 text-sm font-semibold text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
