@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     const { name, email, phone, date, start, days, price, notes } = body
     // support either single-date `date` or multi-day `start`+`days`
     if (!name || !email || (!(date || start))) return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
-    const to = process.env.BOOKING_RECIPIENT || 'yashudkl@gmail.com'
+    const to = process.env.BOOKING_RECIPIENT || 'dhurbapanthi@gmail.com'
 
     // build date(s) list and friendly subject/text
     let dates: string[] = []
@@ -111,8 +111,31 @@ export async function POST(req: Request) {
         }),
       })
       if (!resp.ok) {
-        const data = await resp.json().catch(() => ({}))
-        throw new Error(data?.error || `Resend responded with ${resp.status}`)
+        const errorText = await resp.text().catch(() => '')
+        const data = errorText ? (() => { try { return JSON.parse(errorText) } catch { return null } })() : null
+        const detail = data?.message || data?.error || errorText || resp.statusText || `Resend responded with ${resp.status}`
+
+        if (resp.status !== 403 && process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          const nodemailer = (await import('nodemailer')).default
+          const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT || 587),
+            secure: process.env.SMTP_SECURE === 'true',
+            auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+          })
+
+          await transporter.sendMail({
+            from,
+            to,
+            subject,
+            text,
+          })
+
+          await persistBookingDates(coll, bookingDocs)
+          return new Response(JSON.stringify({ ok: true, fallback: 'smtp' }), { status: 201 })
+        }
+
+        throw new Error(`Resend responded with ${resp.status}: ${detail}`)
       }
 
       await persistBookingDates(coll, bookingDocs)

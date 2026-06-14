@@ -85,7 +85,7 @@ export default function AboutPage() {
                   <div>
                     <div className="text-xs font-bold uppercase tracking-[0.12em] text-neutral-500">Email</div>
                     <div className="mt-1 text-sm font-bold text-neutral-900 whitespace-normal break-words">
-                      <a href="mailto:dhurbananthi@gmail.com" className="underline block w-full break-words">dhurbananthi@gmail.com</a>
+                      <a href="mailto:dhurbapanthi@gmail.com" className="underline block w-full break-words">dhurbapanthi@gmail.com</a>
                     </div>
                   </div>
                 </div>

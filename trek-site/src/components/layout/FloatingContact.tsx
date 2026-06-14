@@ -25,6 +25,12 @@ export default function FloatingContact() {
           >
             Instagram
           </a>
+          <a
+            href="mailto:dhurbapanthi@gmail.com"
+            className="block border-t border-neutral-100 px-4 py-3 text-sm font-semibold text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900"
+          >
+            Email
+          </a>
         </div>
       )}
       <button

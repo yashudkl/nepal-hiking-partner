@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '@/data/treks'
 
@@ -29,24 +29,12 @@ const features = [
   },
 ]
 
-const defaultTestimonials = [
-  {
-    name: 'Alex P.',
-    rating: 5,
-    comment:
-      'An unforgettable experience — the guide was knowledgeable, patient, and kept our group safe. Logistics were seamless.',
-  },
-  {
-    name: 'Maria S.',
-    rating: 5,
-    comment: 'Fantastic local knowledge and warm hospitality. The itinerary was thoughtfully paced.',
-  },
-  {
-    name: 'Tom R.',
-    rating: 5,
-    comment: 'Highly recommended — great communication, and the team handled everything professionally.',
-  },
-]
+type ReviewItem = {
+  name: string
+  rating: number
+  comment: string
+  createdAt?: string
+}
 
 export default function HomePage() {
   const router = useRouter()
@@ -55,12 +43,13 @@ export default function HomePage() {
   const [reviewerName, setReviewerName] = useState('')
   const [reviewerRating, setReviewerRating] = useState('5')
   const [reviewerComment, setReviewerComment] = useState('')
-  const [reviewStatus, setReviewStatus] = useState<'idle' | 'saved' | 'saved-local' | 'error'>('idle')
-  const [reviews, setReviews] = useState<any[]>([])
+  const [reviewStatus, setReviewStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+  const [reviews, setReviews] = useState<ReviewItem[]>([])
+  const [reviewsLoading, setReviewsLoading] = useState(true)
   const safeSlideIndex = currentSlide >= 0 ? currentSlide : 0
   const activeTrek = treks[safeSlideIndex]
   const isManasluSlide = activeTrek.title === 'Manaslu Circuit Trek'
-  const timerRef = typeof window !== 'undefined' ? { current: 0 } : { current: 0 }
+  const timerRef = useRef<number | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,27 +63,24 @@ export default function HomePage() {
   }, [])
 
   async function fetchReviews() {
+    setReviewsLoading(true)
     try {
       const res = await fetch('/api/reviews')
-      let server = []
-      if (res.ok) server = await res.json()
-
-      // local fallback reviews saved when API fails
-      const localKey = 'local_reviews'
-      const local = JSON.parse(localStorage.getItem(localKey) || '[]')
-
-      // normalize and merge (local first)
-      const merged = [
-        ...local.map((r: any) => ({ name: r.name || 'Anonymous', rating: Number(r.rating || 5), comment: r.comment, createdAt: r.createdAt })),
-        ...server.map((r: any) => ({ name: r.name || 'Anonymous', rating: Number(r.rating || 5), comment: r.comment, createdAt: r.createdAt })),
-      ]
-
-      setReviews(merged)
-    } catch (err) {
-      // if fetch fails, at least load local
-      const localKey = 'local_reviews'
-      const local = JSON.parse(localStorage.getItem(localKey) || '[]')
-      setReviews(local)
+      if (!res.ok) throw new Error('Failed to fetch reviews')
+      const server: Array<{ name?: string; rating?: number | string; comment?: string; createdAt?: string }> = await res.json()
+      setReviews(
+        server.map((r) => ({
+          name: r.name || 'Anonymous',
+          rating: Number(r.rating || 5),
+          comment: r.comment || '',
+          createdAt: r.createdAt,
+        })),
+      )
+    } catch (err: unknown) {
+      console.error('Failed to load reviews', err)
+      setReviews([])
+    } finally {
+      setReviewsLoading(false)
     }
   }
 
@@ -184,7 +170,16 @@ export default function HomePage() {
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {(reviews.length ? reviews : defaultTestimonials).slice(0, 6).map((r, i) => (
+            {reviewsLoading ? (
+              <div className="col-span-full border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-600">
+                Loading reviews...
+              </div>
+            ) : reviews.length === 0 ? (
+              <div className="col-span-full border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-600">
+                No published reviews yet.
+              </div>
+            ) : (
+              reviews.slice(0, 6).map((r, i) => (
               <blockquote key={i} className="border border-neutral-200 bg-neutral-50 p-6">
                 <p className="text-sm leading-7 text-neutral-700">{r.comment}</p>
                 <div className="mt-4 flex items-center gap-3">
@@ -213,7 +208,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-4 text-sm font-bold text-neutral-900">— {r.name}</div>
               </blockquote>
-            ))}
+            )))}
           </div>
 
           <div className="mt-8 flex items-center justify-center">
@@ -249,9 +244,6 @@ export default function HomePage() {
             {reviewStatus === 'saved' && (
               <div className="rounded bg-green-100 px-4 py-2 text-sm font-medium text-green-800">Thanks — your review was saved to the server.</div>
             )}
-            {reviewStatus === 'saved-local' && (
-              <div className="rounded bg-yellow-100 px-4 py-2 text-sm font-medium text-yellow-800">Saved locally — will sync when server is available.</div>
-            )}
             {reviewStatus === 'error' && (
               <div className="rounded bg-red-100 px-4 py-2 text-sm font-medium text-red-800">Failed to save review.</div>
             )}
@@ -269,7 +261,6 @@ export default function HomePage() {
                     trekId: 'home',
                   }
 
-                  // try posting to server API first
                   try {
                     const res = await fetch('/api/reviews', {
                       method: 'POST',
@@ -285,33 +276,14 @@ export default function HomePage() {
                     setReviewerRating('5')
                     setReviewerComment('')
                     await fetchReviews()
-                    // auto-hide status
-                    clearTimeout(timerRef.current)
+                    clearTimeout(timerRef.current ?? undefined)
                     timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
-                    return
                   } catch (err) {
-                    // fallback: save to localStorage
-                    try {
-                      const key = 'local_reviews'
-                      const existing = JSON.parse(localStorage.getItem(key) || '[]')
-                      existing.unshift({ ...payload, createdAt: new Date().toISOString() })
-                      localStorage.setItem(key, JSON.stringify(existing))
-                      setIsReviewOpen(false)
-                      setReviewStatus('saved-local')
-                      setReviewerName('')
-                      setReviewerRating('5')
-                      setReviewerComment('')
-                      await fetchReviews()
-                      clearTimeout(timerRef.current)
-                      timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
-                      return
-                    } catch (e) {
-                      console.error('Failed saving review', e)
-                      setReviewStatus('error')
-                      clearTimeout(timerRef.current)
-                      timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
-                      alert('Failed saving review')
-                    }
+                    console.error('Failed saving review', err)
+                    setReviewStatus('error')
+                    clearTimeout(timerRef.current ?? undefined)
+                    timerRef.current = window.setTimeout(() => setReviewStatus('idle'), 4000)
+                    alert('Failed saving review')
                   }
                 }}
                 className="w-full max-w-xl rounded bg-white p-6 shadow-lg"
@@ -368,3 +340,6 @@ export default function HomePage() {
     </div>
   )
 }
+
+
+
