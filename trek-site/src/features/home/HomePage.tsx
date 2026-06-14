@@ -65,9 +65,12 @@ export default function HomePage() {
   async function fetchReviews() {
     setReviewsLoading(true)
     try {
-      const res = await fetch('/api/reviews')
-      if (!res.ok) throw new Error('Failed to fetch reviews')
-      const server: Array<{ name?: string; rating?: number | string; comment?: string; createdAt?: string }> = await res.json()
+      const res = await fetch('/api/reviews', { cache: 'no-store' })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data?.error || 'Failed to fetch reviews')
+      }
+      const server: Array<{ name?: string; rating?: number | string; comment?: string; createdAt?: string }> = Array.isArray(data) ? data : []
       setReviews(
         server.map((r) => ({
           name: r.name || 'Anonymous',
