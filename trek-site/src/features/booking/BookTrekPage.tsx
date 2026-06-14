@@ -33,6 +33,8 @@ export default function BookTrekPage() {
   const today = new Date()
   const [visibleMonth, setVisibleMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1))
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target
@@ -61,9 +63,38 @@ export default function BookTrekPage() {
     })
   })()
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    setSubmitted(true)
+    setError(null)
+
+    if (!formData.name || !formData.email || !formData.phone || !formData.trekId || formData.dates.length === 0) {
+      setError('Please complete all required fields.')
+      return
+    }
+
+    setSending(true)
+    try {
+      const selectedTrek = treks.find((trek) => trek.id === formData.trekId)
+      const res = await fetch('/api/trek-bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          trekTitle: selectedTrek?.title || formData.trekId,
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data?.error || 'Failed to send booking request')
+      }
+
+      setSubmitted(true)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to send booking request')
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -84,6 +115,11 @@ export default function BookTrekPage() {
           {submitted && (
             <div className="mt-6 border border-neutral-200 bg-neutral-50 p-4 text-sm font-semibold text-neutral-700">
               Request received. We will contact you with availability and next steps.
+            </div>
+          )}
+          {error && (
+            <div className="mt-6 border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
+              {error}
             </div>
           )}
 
@@ -206,8 +242,8 @@ export default function BookTrekPage() {
               <textarea name="message" value={formData.message} onChange={handleChange} rows={5} className="border border-neutral-300 px-4 py-3 text-neutral-900 outline-none focus:border-neutral-600" />
             </label>
 
-            <button type="submit" className="border border-primary-600 bg-primary-600 px-6 py-4 text-sm font-bold text-white hover:bg-primary-700">
-              Submit Booking Request
+            <button type="submit" disabled={sending} className="border border-primary-600 bg-primary-600 px-6 py-4 text-sm font-bold text-white hover:bg-primary-700 disabled:opacity-60">
+              {sending ? 'Sending...' : 'Submit Booking Request'}
             </button>
           </div>
         </form>
