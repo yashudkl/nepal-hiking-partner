@@ -164,6 +164,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-neutral-200 bg-neutral-50">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">What Makes Us Special</p>
+            <h2 className="mt-3 text-4xl font-bold tracking-tight text-neutral-900">Tailored treks with a family-run approach.</h2>
+            <p className="mt-5 text-base leading-8 text-neutral-600">
+              We customize your trek according to your time, interest, budget and purpose of your visit. Tell us your dream, we make it happen. Deal with the Local Experts.
+            </p>
+          </div>
+
+          <div className="border border-neutral-200 bg-white p-8 shadow-sm">
+            <p className="text-lg leading-8 text-neutral-700">
+              Nepal Hiking Partner is a team of experienced local experts providing quality service at an affordable price. It&apos;s more like a family-run business: come as a client and go as family.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="border-t border-neutral-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">

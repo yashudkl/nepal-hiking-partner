@@ -1,13 +1,21 @@
 "use client"
 
 import Image from 'next/image'
+import type { StaticImageData } from 'next/image'
 import { useRouter } from 'next/navigation'
 import dhruvImg from '@/assets/members/dhruv.webp'
 import prabeshImg from '@/assets/members/prabesh.webp'
 import divyaImg from '@/assets/members/divya.webp'
 import sapnaImg from '@/assets/members/sapna.webp'
 
-const teamMembers = [
+type TeamMember = {
+  name: string
+  role: string
+  desc: string
+  image: StaticImageData
+}
+
+const teamMembers: TeamMember[] = [
   {
     name: 'Prabesh Thakuri',
     role: 'Senior Trekking Guide & High-Altitude Specialist',
@@ -140,13 +148,17 @@ export default function AboutPage() {
 
               {teamMembers.map((member) => (
                 <article key={member.name} className="border border-neutral-200 bg-white p-6">
-                  <div className="h-14 w-14 overflow-hidden rounded-full border border-neutral-300 bg-neutral-50">
+                  <div className="mx-auto h-24 w-24 overflow-hidden rounded-full border border-neutral-300 bg-neutral-50">
                     <Image
-                      src={(member.image as any)}
+                      src={member.image}
                       alt={member.name}
-                      width={56}
-                      height={56}
-                      className="h-full w-full object-cover"
+                      width={96}
+                      height={96}
+                      className={`h-full w-full object-cover ${
+                        member.name === 'Prabesh Thakuri' || member.name === 'Sapna Khadka'
+                          ? 'rotate-[90deg] scale-[1.35] object-center'
+                          : 'object-center'
+                      }`}
                     />
                   </div>
                   <h3 className="mt-6 text-xl font-bold text-neutral-900">{member.name}</h3>
