@@ -1,6 +1,7 @@
 'use client'
 
 import { use, useState } from 'react'
+import type { StaticImageData } from 'next/image'
 import { useRouter } from 'next/navigation'
 import { treks } from '@/data/treks'
 import trekAssetGallery from './galleryImages'
@@ -44,8 +45,8 @@ export default function TrekDetailPage({ params }: TrekProps) {
 
   const assetImages = trekAssetGallery[id] || []
   const galleryImages = assetImages.length > 0 ? assetImages : (galleryMap[id] || []).map((name) => `/assets/${id}/${name}`)
-  const images = galleryImages.length > 0 ? galleryImages : [trek.image]
-  const normalizedImages = images.map((img) => (typeof img === 'string' ? img : (img as any)?.src || (img as any)?.default || ''))
+  const images: (string | StaticImageData)[] = galleryImages.length > 0 ? galleryImages : [trek.image]
+  const normalizedImages = images.map((img) => (typeof img === 'string' ? img : img.src))
 
   return (
     <div className="bg-white">
@@ -59,6 +60,15 @@ export default function TrekDetailPage({ params }: TrekProps) {
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-neutral-500">{trek.difficulty}</p>
               <h1 className="mt-3 text-5xl font-bold tracking-tight text-neutral-900 md:text-6xl">{trek.title}</h1>
               <p className="mt-4 text-lg font-medium text-neutral-600">{trek.subtitle}</p>
+              {trek.badges && trek.badges.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {trek.badges.map((badge) => (
+                    <span key={badge} className="bg-primary-600 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 border border-neutral-200 bg-white">
               {[

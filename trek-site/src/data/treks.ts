@@ -11,6 +11,7 @@ export interface TrekData {
   price: string
   rating: number
   reviews: number
+  badges?: string[]
   
   overview: string
   highlights: string[]
@@ -190,6 +191,7 @@ export const treks: TrekData[] = [
     id: 'narphu-valley',
     title: 'Narphu Valley Trek',
     subtitle: 'Remote Alpine Wilderness',
+    badges: ['Best Selling Trek'],
     image: '/assets/narphu-valley/narphu_valley.webp',
     difficulty: 'Challenging',
     duration: '16 Days',
@@ -200,7 +202,7 @@ export const treks: TrekData[] = [
     rating: 4.7,
     reviews: 178,
     
-    overview: 'Trek through the remote and pristine Narphu Valley. Experience authentic Tibetan culture, dramatic mountain scenery, and some of Nepal\'s most untouched wilderness areas.',
+    overview: 'Trek through the remote and pristine Narphu Valley. Experience authentic Tibetan culture, dramatic mountain scenery, and some of Nepal\'s most untouched wilderness areas. One of Nepal\'s most remote off-the-beaten trails.',
     
     highlights: [
       'Explore remote Narphu Valley',
@@ -470,6 +472,7 @@ export const treks: TrekData[] = [
     id: 'manaslu-circuit',
     title: 'Manaslu Circuit Trek',
     subtitle: 'Remote Mountain Wilderness',
+    badges: ['Best Selling Trek'],
     image: '/assets/manaslu-circuit/manaslu.webp',
     difficulty: 'Challenging',
     duration: '12 Days',

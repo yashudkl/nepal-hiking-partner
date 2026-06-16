@@ -4,15 +4,32 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { treks } from '@/data/treks'
 
+const featuredTrekOrder = ['manaslu-circuit', 'narphu-valley']
+
 export default function TrekListPage() {
   const router = useRouter()
   const [query, setQuery] = useState('')
 
-  const filtered = treks.filter((t) => {
-    if (!query) return true
-    const q = query.toLowerCase()
-    return t.title.toLowerCase().includes(q) || t.subtitle.toLowerCase().includes(q)
-  })
+  const filtered = treks
+    .map((trek, index) => ({ trek, index }))
+    .filter(({ trek }) => {
+      if (!query) return true
+      const q = query.toLowerCase()
+      return trek.title.toLowerCase().includes(q) || trek.subtitle.toLowerCase().includes(q)
+    })
+    .sort((a, b) => {
+      const aFeatured = featuredTrekOrder.indexOf(a.trek.id)
+      const bFeatured = featuredTrekOrder.indexOf(b.trek.id)
+
+      if (aFeatured !== bFeatured) {
+        const safeA = aFeatured === -1 ? Number.POSITIVE_INFINITY : aFeatured
+        const safeB = bFeatured === -1 ? Number.POSITIVE_INFINITY : bFeatured
+        if (safeA !== safeB) return safeA - safeB
+      }
+
+      return a.index - b.index
+    })
+    .map(({ trek }) => trek)
 
   return (
     <div className="bg-white">
@@ -67,8 +84,17 @@ export default function TrekListPage() {
               <button type="button" onClick={() => router.push(`/trek/${trek.id}`)} className="block w-full text-left">
                 <div className="relative">
                   <img src={trek.image} alt={trek.title} className="aspect-[4/3] w-full object-cover" />
-                  <div className="absolute left-4 top-4 bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-neutral-700">
-                    {trek.difficulty}
+                  <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
+                    <div className="bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-neutral-700">
+                      {trek.difficulty}
+                    </div>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      {trek.badges?.map((badge) => (
+                        <div key={badge} className="bg-primary-600 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+                          {badge}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 <div className="p-6">
